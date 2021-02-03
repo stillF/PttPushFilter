@@ -142,8 +142,12 @@
                             }
                         } else {
                             _searchIndex = _pushData.findIndex((obj => obj.userId === searchPttID));
-                            _html += "<span># 1【" + _pushData[_searchIndex]['userId'] + "】</span>";
-                            _html += "<pre>" + _pushData[_searchIndex]['pushContent'] + "</pre>";
+                            if (_searchIndex !== -1) {
+                                _html += "<span># 1【" + _pushData[_searchIndex]['userId'] + "】</span>";
+                                _html += "<pre>" + _pushData[_searchIndex]['pushContent'] + "</pre>";
+                            } else {
+                                $("#resultArea").append("查無此id資料");
+                            }
                         }
                         $("#resultArea").append(_html);
                     } else {
