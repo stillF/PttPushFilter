@@ -1,17 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stillF&nbsp;-&nbsp;Ptt推文</title>
-    <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" type="text/css" href="/PttPushFilter/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/fontawesome-all.css">
     <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/select2.css">
     <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/toastr.min.css">
     <script type="text/javascript" src="/PttPushFilter/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/PttPushFilter/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/PttPushFilter/js/select2.js"></script>
-    <script type="text/javascript" src="/PttPushFilter/js/toastr.min.js"></script>
+    <script type="text/javascript" src="/PttPushFilter/js/toastr.min.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/fontawesome-all.css">
+    <link rel="stylesheet" type="text/css" href="/css/select2.css">
+    <link rel="stylesheet" type="text/css" href="/css/toastr.min.css">
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/select2.js"></script>
+    <script type="text/javascript" src="/js/toastr.min.js"></script>
 </head>
 <body>
     <header>
@@ -38,29 +46,49 @@
                     搜尋
                 </div>
                 <div class="panel-body">
-                    <div class="form-inline" style="margin-bottom:8px;">
-                        <div class="form-group" style="margin-right:7px;">
-                            <div class="radio">
-                                <label class="radio-inline control-label" style="font-weight: 700;">
-                                    <input type="radio" id="urlType" name="urlType" value="1" checked>
-                                    ptt.cc 網址
-                                </label>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#searchTab1">網址</a></li>
+                        <li><a data-toggle="tab" href="#searchTab2">原始檔</a></li>
+                    </ul>
+                    <div class="tab-content" style="margin:10px;">
+                        <div id="searchTab1" class="tab-pane fade in active">
+                            <div class="form-inline" style="margin-bottom:8px;">
+                                <div class="form-group" style="margin-right:7px;">
+                                    <div class="radio">
+                                        <label class="radio-inline control-label" style="font-weight: 700;">
+                                            <input type="radio" id="urlType" name="urlType" value="1" checked>
+                                            ptt.cc 網址
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-right:7px;">
+                                    <div class="radio">
+                                        <label class="radio-inline control-label" style="font-weight: 700;">
+                                            <input type="radio" id="urlType" name="urlType" value="2">
+                                            disp.cc 網址
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group input-group" style="margin-right:7px;">
+                                <input type="text" class="form-control" name="pttUrl" id="pttUrl">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" onclick="cleanInput('pttUrl')"><i class="far fa-trash-alt"></i></button>
+                                </span>
                             </div>
                         </div>
-                        <div class="form-group" style="margin-right:7px;">
-                            <div class="radio">
-                                <label class="radio-inline control-label" style="font-weight: 700;">
-                                    <input type="radio" id="urlType" name="urlType" value="2">
-                                    disp.cc 網址
-                                </label>
+                        <div id="searchTab2" class="tab-pane fade">
+                            <div class="form-group" style="margin-right:7px;">
+                                <div class="radio">
+                                    <label class="radio-inline control-label" style="font-weight: 700;">
+                                        <input type="radio" id="urlType" name="urlType" value="3">
+                                        ptt.cc 原始檔
+                                    </label>
+                                    <button type="button" class="btn btn-danger btn-xs" style="margin-left:7px;" onclick="cleanInput('htmlTxt')">清除</button>
+                                </div>
                             </div>
+                            <textarea class="form-control" rows="5" id="htmlTxt"></textarea>
                         </div>
-                    </div>
-                    <div class="form-group input-group" style="margin-right:7px;">
-                        <input type="text" class="form-control" name="pttUrl" id="pttUrl">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" onclick="cleanInput('pttUrl')"><i class="far fa-trash-alt"></i></button>
-                        </span>
                     </div>
                     <label>id</label>
                     <div class="form-group input-group" style="margin-right:7px;">
@@ -101,7 +129,10 @@
 
     <footer class="navbar-inverse">
         <div class="container-fluid text-center">
-            <p class="text-muted" style="margin-top:10px;color:#ffffff">© Copyright 2021. All Rights Reserved.</p>
+            <p class="text-muted" style="margin-top:10px;color:#ffffff">
+                © Copyright 2021. All Rights Reserved.
+                <button type="button" class="btn btn-primary btn-xs" onclick="goToArea(1);"><i class="fas fa-chevron-up"></i></button>
+            </p>
         </div>
     </footer>
 
@@ -116,8 +147,10 @@
 
             if (_UrlData["urlType"] === 1) {
                 setResultDataByType1(_UrlData["pttUrl"]);
-            } else {
+            } else if (_UrlData["urlType"] === 2) {
                 setResultDataByType2(_UrlData["pttUrl"]);
+            } else if (_UrlData["urlType"] === 3) {
+                setResultDataByType3();
             }
         }
 
@@ -263,6 +296,58 @@
         }
 
 
+        function setResultDataByType3(_Ptturl) {//ptt.cc原始檔
+            $("#loadingModal").modal("show");
+            let _pushData = [];
+            let _userId = "";
+            let _pushContent = "";
+            let _searchIndex = -1;
+            let _html = "";
+            let htmlTxt = jQuery.trim($("#htmlTxt").val());
+            let pushData = $(htmlTxt).find('div.push');
+            let _length = pushData.length;
+            let _item = null;
+            for (i = 0; i < _length; i++) {
+                _item = $(pushData).eq(i);
+                _userId = jQuery.trim($(_item).find(".push-userid").text());
+                _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
+                if (_searchIndex !== -1) {
+                    _pushContent = _pushData[_searchIndex]["pushContent"];
+                    _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "\n";
+                    _pushData[_searchIndex]["pushContent"] = _pushContent;
+                } else {
+                    _pushData.push({
+                        userId: _userId,
+                        pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "\n"
+                    });
+                }
+            }
+
+            let _iMax = _pushData.length;
+            if (_iMax > 0) {
+                let searchPttID = jQuery.trim($("#pttID").val());
+                if (searchPttID === "") {
+                    for (i = 0; i < _iMax; i++) {
+                        _html += "<span># " + (i + 1) + "【" + _pushData[i]['userId'] + "】</span>";
+                        _html += "<pre>" + _pushData[i]['pushContent'] + "</pre>";
+                    }
+                } else {
+                    _searchIndex = _pushData.findIndex((obj => obj.userId === searchPttID));
+                    if (_searchIndex !== -1) {
+                        _html += "<span># 1【" + _pushData[_searchIndex]['userId'] + "】</span>";
+                        _html += "<pre>" + _pushData[_searchIndex]['pushContent'] + "</pre>";
+                    } else {
+                        $("#resultArea").append("查無此id資料");
+                    }
+                }
+                $("#resultArea").append(_html);
+            } else {
+                $("#resultArea").append("查無資料");
+            }
+            $("#loadingModal").modal("hide");
+        }
+
+
         function checkUrl() {
             let _urlType = parseInt($("input[name='urlType']:checked").val());
             let _pttUrl = jQuery.trim($("#pttUrl").val());
@@ -270,8 +355,11 @@
             if (_urlType === 1) { //ptt.cc 網址
                 if (!_pttUrl.startsWith("https://www.ptt.cc/bbs/")) { _status = false; }
                 if (!_pttUrl.endsWith(".html")) { _status = false; }
-            } else {//disp.cc 網址
+            } else if (_urlType === 2) {//disp.cc 網址
                 if (!_pttUrl.startsWith("https://disp.cc/b/")) { _status = false; }
+            } else if (_urlType === 3) {//ptt.cc 原始檔
+                _pttUrl = "";
+                if (jQuery.trim($("#htmlTxt").val()) === "") { _status = false; }
             }
             return result = {
                 pttUrl: _pttUrl,
@@ -283,6 +371,13 @@
 
         function cleanInput(inputName) {
             $("#" + inputName).val("");
+        }
+
+
+        function goToArea(type) {
+            if (type === 1) {
+                $('html,body').animate({ scrollTop: 0 }, 1000);
+            }
         }
     </script>
 </body>
