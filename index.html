@@ -318,12 +318,12 @@
                 _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
                 if (_searchIndex !== -1) {
                     _pushContent = _pushData[_searchIndex]["pushContent"];
-                    _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "\n";
+                    _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:blue;margin-left:20px;'>#" + (i + 1) + "</span>" + "\n";
                     _pushData[_searchIndex]["pushContent"] = _pushContent;
                 } else {
                     _pushData.push({
                         userId: _userId,
-                        pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "\n"
+                        pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:blue;margin-left:20px;'>#" + (i + 1) + "</span>" + "\n"
                     });
                 }
             }
