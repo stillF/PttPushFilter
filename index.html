@@ -4,32 +4,34 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stillF&nbsp;-&nbsp;Ptt推文</title>
-    <!--<link rel="stylesheet" type="text/css" href="/PttPushFilter/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/fontawesome-all.css">
     <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/select2.css">
     <link rel="stylesheet" type="text/css" href="/PttPushFilter/css/toastr.min.css">
     <script type="text/javascript" src="/PttPushFilter/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/PttPushFilter/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/PttPushFilter/js/select2.js"></script>
-    <script type="text/javascript" src="/PttPushFilter/js/toastr.min.js"></script>-->
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/PttPushFilter/js/toastr.min.js"></script>
+
+    <!--<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/fontawesome-all.css">
     <link rel="stylesheet" type="text/css" href="/css/select2.css">
     <link rel="stylesheet" type="text/css" href="/css/toastr.min.css">
     <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/select2.js"></script>
-    <script type="text/javascript" src="/js/toastr.min.js"></script>
+    <script type="text/javascript" src="/js/toastr.min.js"></script>-->
     <style>
         #resultArea pre {
             font-size: 17px;
+            background-color:#c8c8c8
         }
     </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-inverse navbar-static-top" role="Navigation">
-            <div class="container" style="width:100%">
+            <div class="container" style="width:100%;background-color:#3E4449">
                 <div class="navbar-header">
                     <a href="https://stillf.github.io/" class="navbar-brand" style="color:#ffffff;margin-left:10px;" target="_blank">stillF&ensp;信柴柴，得第一</a>
                 </div>
@@ -39,7 +41,7 @@
 
     <div class="container" style="width:100%">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div style="color:#333;font-size:22px;font-weight:bold;">
+            <div style="color:#eeeeee;font-size:22px;font-weight:bold;">
                 Ptt推文
                 <a href="https://github.com/stillF/PttPushFilter" style="margin-left:5px;" target="_blank"><i class="fas fa-link"></i></a>
             </div>
@@ -51,51 +53,9 @@
                     搜尋
                 </div>
                 <div class="panel-body">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#searchTab1">網址</a></li>
-                        <li><a data-toggle="tab" href="#searchTab2">原始檔</a></li>
-                    </ul>
-                    <div class="tab-content" style="margin:10px;">
-                        <div id="searchTab1" class="tab-pane fade in active">
-                            <div class="form-inline" style="margin-bottom:8px;">
-                                <div class="form-group" style="margin-right:7px;">
-                                    <div class="radio">
-                                        <label class="radio-inline control-label" style="font-weight: 700;">
-                                            <input type="radio" id="urlType" name="urlType" value="1" checked>
-                                            ptt.cc 網址
-                                        </label>
-                                    </div>
-                                </div>
-                                <!--<div class="form-group" style="margin-right:7px;">
-                                    <div class="radio">
-                                        <label class="radio-inline control-label" style="font-weight: 700;">
-                                            <input type="radio" id="urlType" name="urlType" value="2">
-                                            disp.cc 網址
-                                        </label>
-                                    </div>
-                                </div>-->
-                            </div>
-                            <div class="form-group input-group" style="margin-right:7px;">
-                                <input type="text" class="form-control" name="pttUrl" id="pttUrl">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" onclick="cleanInput('pttUrl')"><i class="far fa-trash-alt"></i></button>
-                                </span>
-                            </div>
-                        </div>
-                        <div id="searchTab2" class="tab-pane fade">
-                            <div class="form-group" style="margin-right:7px;">
-                                <div class="radio">
-                                    <label class="radio-inline control-label" style="font-weight: 700;">
-                                        <input type="radio" id="urlType" name="urlType" value="3">
-                                        ptt.cc 原始檔
-                                    </label>
-                                    <button type="button" class="btn btn-danger btn-xs" style="margin-left:7px;" onclick="cleanInput('htmlTxt')">清除</button>
-                                </div>
-                            </div>
-                            <textarea class="form-control" rows="5" id="htmlTxt"></textarea>
-                        </div>
-                    </div>
-                    <label>id</label>
+                    <label>ptt.cc 原始檔</label>
+                    <textarea class="form-control" rows="5" id="htmlTxt"></textarea>
+                    <label style="margin-top:15px;">id</label>
                     <div class="form-group input-group" style="margin-right:7px;">
                         <input type="text" class="form-control" name="pttID" id="pttID">
                         <span class="input-group-btn">
@@ -133,7 +93,7 @@
     </div>
 
     <footer class="navbar-inverse">
-        <div class="container-fluid text-center">
+        <div class="container-fluid text-center" style="background-color:#3E4449">
             <p class="text-muted" style="margin-top:10px;color:#ffffff">
                 © Copyright 2021. All Rights Reserved.
                 <button type="button" class="btn btn-primary btn-xs" onclick="goToArea(1);"><i class="fas fa-chevron-up"></i></button>
@@ -149,7 +109,7 @@
                 toastr.error("網址格式錯誤，請重新輸入。");
                 return false;
             }
-
+            console.log(_UrlData);
             if (_UrlData["urlType"] === 1) {
                 setResultDataByType1(_UrlData["pttUrl"]);
             } else if (_UrlData["urlType"] === 2) {
@@ -225,6 +185,9 @@
                     404: function () {
                         $("#resultArea").append("404 not found");
                     }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus + ": " + jqXHR.status + " " );
                 }
             });
         }
@@ -354,7 +317,8 @@
 
 
         function checkUrl() {
-            let _urlType = parseInt($("input[name='urlType']:checked").val());
+            //let _urlType = parseInt($("input[name='urlType']:checked").val());
+            let _urlType = 3;
             let _pttUrl = jQuery.trim($("#pttUrl").val());
             let _status = true;
             if (_urlType === 1) { //ptt.cc 網址
