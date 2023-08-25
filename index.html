@@ -14,14 +14,14 @@
     <script type="text/javascript" src="/PttPushFilter/js/select2.js"></script>
     <script type="text/javascript" src="/PttPushFilter/js/toastr.min.js"></script>
 
-    <!--<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/fontawesome-all.css">
-    <link rel="stylesheet" type="text/css" href="/css/select2.css">
-    <link rel="stylesheet" type="text/css" href="/css/toastr.min.css">
-    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/select2.js"></script>
-    <script type="text/javascript" src="/js/toastr.min.js"></script>-->
+    <!-- <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/fontawesome-all.css">
+    <link rel="stylesheet" type="text/css" href="./css/select2.css">
+    <link rel="stylesheet" type="text/css" href="./css/toastr.min.css">
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/select2.js"></script>
+    <script type="text/javascript" src="./js/toastr.min.js"></script> -->
     <style>
         #resultArea pre {
             font-size: 17px;
@@ -66,6 +66,12 @@
                             <button class="btn btn-default" type="button" onclick="cleanInput('pttID')"><i
                                     class="far fa-trash-alt"></i></button>
                         </span>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="isCheckFloor" type="checkbox" value="1">
+                        <label class="form-check-label">
+                            樓層
+                        </label>
                     </div>
                     <button type="button" class="btn btn-primary btn-block" style="margin-top:10px;"
                         onclick="searchPtt();">送出</button>
@@ -115,7 +121,6 @@
                 toastr.error("網址格式錯誤，請重新輸入。");
                 return false;
             }
-            console.log(_UrlData);
             if (_UrlData["urlType"] === 1) {
                 setResultDataByType1(_UrlData["pttUrl"]);
             } else if (_UrlData["urlType"] === 2) {
@@ -278,19 +283,33 @@
             let pushData = $(htmlTxt).find('div.push');
             let _length = pushData.length;
             let _item = null;
+            const isCheckFloor = $("input[name='isCheckFloor']:checked").val() ? true : false;
             for (i = 0; i < _length; i++) {
                 _item = $(pushData).eq(i);
                 _userId = jQuery.trim($(_item).find(".push-userid").text());
                 _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
                 if (_searchIndex !== -1) {
                     _pushContent = _pushData[_searchIndex]["pushContent"];
-                    _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                    if (isCheckFloor) {
+                        _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                    } else {
+                        _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "\n";
+                    }
                     _pushData[_searchIndex]["pushContent"] = _pushContent;
                 } else {
-                    _pushData.push({
-                        userId: _userId,
-                        pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n"
-                    });
+
+
+                    if (isCheckFloor) {
+                        _pushData.push({
+                            userId: _userId,
+                            pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n"
+                        });
+                    } else {
+                        _pushData.push({
+                            userId: _userId,
+                            pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "\n"
+                        });
+                    }
                 }
             }
 
@@ -350,4 +369,5 @@
         }
     </script>
 </body>
+
 </html>
