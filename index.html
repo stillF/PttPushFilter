@@ -24,7 +24,7 @@
     <script type="text/javascript" src="./js/toastr.min.js"></script> -->
     <style>
         #resultArea pre {
-            font-size: 17px;
+            font-size: 25px;
             color: #c8c8c8;
             background-color: #3a3f44;
         }
@@ -79,7 +79,8 @@
             </div>
             <div class="panel panel-default" style="margin-top:35px;">
                 <div class="panel-heading">
-                    資料
+                    資料<a class="btn btn-primary" id="pttWebsite" href="https://stillf.github.io/PttPushFilter/"
+                        target="_blank" role="button" style="margin-left:10px;">文章網址</a>
                 </div>
                 <div class="panel-body">
                     <div id="resultArea"></div>
@@ -284,6 +285,9 @@
             let _length = pushData.length;
             let _item = null;
             const isCheckFloor = $("input[name='isCheckFloor']:checked").val() ? true : false;
+            const pttWebsite = $(htmlTxt).find('span.f2').eq(1).find('a').attr('href');
+            var pttWebsiteLink = document.getElementById("pttWebsite");
+            pttWebsiteLink.setAttribute("href", pttWebsite);
             for (i = 0; i < _length; i++) {
                 _item = $(pushData).eq(i);
                 _userId = jQuery.trim($(_item).find(".push-userid").text());
