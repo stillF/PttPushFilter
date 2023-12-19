@@ -131,7 +131,7 @@
             }
         }
 
-        function setResultDataByType1(_Ptturl) {//ptt.cc搜尋
+        function setResultDataByType1(_Ptturl) { //ptt.cc搜尋
             $("#loadingModal").modal("show");
             let _pushData = [];
             let _userId = "";
@@ -142,7 +142,7 @@
                 //url: 'https://cors-anywhere.herokuapp.com/' + _Ptturl,
                 url: 'https://secret-ocean-49799.herokuapp.com/' + _Ptturl,
                 dataType: 'html',
-                success: function (data) {
+                success: function(data) {
                     if ($(data).find('.over18-notice p').length > 0) {
                         $("#resultArea").append("over18=1;");
                         return false;
@@ -189,21 +189,21 @@
                         $("#resultArea").append("查無資料");
                     }
                 },
-                complete: function () {
+                complete: function() {
                     $("#loadingModal").modal("hide");
                 },
                 statusCode: {
-                    404: function () {
+                    404: function() {
                         $("#resultArea").append("404 not found");
                     }
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus + ": " + jqXHR.status + " ");
                 }
             });
         }
 
-        function setResultDataByType2(_Ptturl) {//disp.cc搜尋
+        function setResultDataByType2(_Ptturl) { //disp.cc搜尋
             $("#loadingModal").modal("show");
             let _pushData = [];
             let _userId = "";
@@ -214,7 +214,7 @@
                 //url: 'https://cors-anywhere.herokuapp.com/' + _Ptturl,
                 url: 'https://secret-ocean-49799.herokuapp.com/' + _Ptturl,
                 dataType: 'html',
-                success: function (data) {
+                success: function(data) {
                     let pushData = $(data).find('.ptt-push-group .push_row');
                     let _length = pushData.length;
                     let _item = null;
@@ -224,13 +224,13 @@
                         _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
                         if (_searchIndex !== -1) {
                             _pushContent = _pushData[_searchIndex]["pushContent"];
-                            $(_item).find(".fgY0").each(function () {
+                            $(_item).find(".fgY0").each(function() {
                                 _pushContent += ($(this).text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
                             });
                             _pushData[_searchIndex]["pushContent"] = _pushContent;
                         } else {
                             _pushContent = "";
-                            $(_item).find(".fgY0").each(function () {
+                            $(_item).find(".fgY0").each(function() {
                                 _pushContent += ($(this).text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
                             });
                             _pushData.push({
@@ -262,22 +262,60 @@
                         $("#resultArea").append("查無資料");
                     }
                 },
-                complete: function () {
+                complete: function() {
                     $("#loadingModal").modal("hide");
                 },
                 statusCode: {
-                    404: function () {
+                    404: function() {
                         $("#resultArea").append("404 not found");
                     }
                 }
             });
         }
 
-        function setResultDataByType3(_Ptturl) {//ptt.cc原始檔
+        function isCheckImage(txt) {
+            let pass1 = false;
+            let pass2 = false;
+            switch (true) {
+                case txt.startsWith("http:"):
+                    pass1 = true;
+                    break;
+                case txt.startsWith("https:"):
+                    pass1 = true;
+                    break;
+                default:
+                    break;
+            }
+            switch (true) {
+                case txt.endsWith(".jpg"):
+                    pass2 = true;
+                    break;
+                case txt.endsWith(".JPG"):
+                    pass2 = true;
+                    break;
+                case txt.endsWith(".png"):
+                    pass2 = true;
+                    break;
+                case txt.endsWith(".PNG"):
+                    pass2 = true;
+                    break;
+                default:
+                    break;
+            }
+            if (pass1 && pass2) {
+                return true;
+            }
+            return false;
+        }
+
+        function setResultDataByType3(_Ptturl) { //ptt.cc原始檔
             $("#loadingModal").modal("show");
             let _pushData = [];
             let _userId = "";
             let _pushContent = "";
+            let _itemPushContent = "";
+            let _addPushContent = "";
+            let _isImage = false;
             let _searchIndex = -1;
             let _html = "";
             let htmlTxt = jQuery.trim($("#htmlTxt").val());
@@ -289,34 +327,56 @@
             var pttWebsiteLink = document.getElementById("pttWebsite");
             pttWebsiteLink.setAttribute("href", pttWebsite);
             for (i = 0; i < _length; i++) {
+                _isImage = false;
                 _item = $(pushData).eq(i);
                 _userId = jQuery.trim($(_item).find(".push-userid").text());
                 _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
+                _itemPushContent = jQuery.trim(($(_item).find(".push-content").text()).replace(": ", ""));
+                if (isCheckImage(_itemPushContent)) {
+                    _isImage = true;
+                }
                 if (_searchIndex !== -1) {
-                    _pushContent = _pushData[_searchIndex]["pushContent"];
-                    if (isCheckFloor) {
-                        _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                    _addPushContent = _pushData[_searchIndex]["pushContent"];
+                    if (_isImage) {
+                        _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
+                        if (isCheckFloor) {
+                            _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                        } else {
+                            _addPushContent += "\n";
+                        }
                     } else {
-                        _pushContent += ($(_item).find(".push-content").text()).replace(": ", "") + "\n";
+                        _addPushContent += _itemPushContent;
+                        if (isCheckFloor) {
+                            _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                        } else {
+                            _addPushContent += "\n";
+                        }
                     }
-                    _pushData[_searchIndex]["pushContent"] = _pushContent;
+                    _pushData[_searchIndex]["pushContent"] = _addPushContent;
                 } else {
 
-
-                    if (isCheckFloor) {
-                        _pushData.push({
-                            userId: _userId,
-                            pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n"
-                        });
+                    _addPushContent = "";
+                    if (_isImage) {
+                        _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
+                        if (isCheckFloor) {
+                            _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                        } else {
+                            _addPushContent += "\n";
+                        }
                     } else {
-                        _pushData.push({
-                            userId: _userId,
-                            pushContent: ($(_item).find(".push-content").text()).replace(": ", "") + "\n"
-                        });
+                        _addPushContent += _itemPushContent;
+                        if (isCheckFloor) {
+                            _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                        } else {
+                            _addPushContent += "\n";
+                        }
                     }
+                    _pushData.push({
+                        userId: _userId,
+                        pushContent: _addPushContent
+                    });
                 }
             }
-
             let _iMax = _pushData.length;
             if (_iMax > 0) {
                 let searchPttID = jQuery.trim($("#pttID").val());
@@ -347,13 +407,21 @@
             let _pttUrl = jQuery.trim($("#pttUrl").val());
             let _status = true;
             if (_urlType === 1) { //ptt.cc 網址
-                if (!_pttUrl.startsWith("https://www.ptt.cc/bbs/")) { _status = false; }
-                if (!_pttUrl.endsWith(".html")) { _status = false; }
-            } else if (_urlType === 2) {//disp.cc 網址
-                if (!_pttUrl.startsWith("https://disp.cc/b/")) { _status = false; }
-            } else if (_urlType === 3) {//ptt.cc 原始檔
+                if (!_pttUrl.startsWith("https://www.ptt.cc/bbs/")) {
+                    _status = false;
+                }
+                if (!_pttUrl.endsWith(".html")) {
+                    _status = false;
+                }
+            } else if (_urlType === 2) { //disp.cc 網址
+                if (!_pttUrl.startsWith("https://disp.cc/b/")) {
+                    _status = false;
+                }
+            } else if (_urlType === 3) { //ptt.cc 原始檔
                 _pttUrl = "";
-                if (jQuery.trim($("#htmlTxt").val()) === "") { _status = false; }
+                if (jQuery.trim($("#htmlTxt").val()) === "") {
+                    _status = false;
+                }
             }
             return result = {
                 pttUrl: _pttUrl,
@@ -368,9 +436,11 @@
 
         function goToArea(type) {
             if (type === 1) {
-                $('html,body').animate({ scrollTop: 0 }, 1000);
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 1000);
             }
-        }
+        }    
     </script>
 </body>
 
