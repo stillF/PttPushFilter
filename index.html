@@ -333,49 +333,55 @@
             var pttWebsiteLink = document.getElementById("pttWebsite");
             pttWebsiteLink.setAttribute("href", pttWebsite);
             for (i = 0; i < _length; i++) {
-                _isImage = false;
                 _item = $(pushData).eq(i);
                 _userId = jQuery.trim($(_item).find(".push-userid").text());
                 _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
                 _itemPushContent = jQuery.trim(($(_item).find(".push-content").text()).replace(": ", ""));
-                if (isCheckImage(_itemPushContent)) {
-                    _isImage = true;
-                }
+                _isImage = isCheckImage(_itemPushContent);
                 if (_searchIndex !== -1) {
                     _addPushContent = _pushData[_searchIndex]["pushContent"];
-                    if (_isImage) {
-                        _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
-                        if (isCheckFloor) {
+                    switch (true) {
+                        case _isImage && isCheckFloor:
+                            _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                        } else {
-                            _addPushContent += "\n";
-                        }
-                    } else {
-                        _addPushContent += _itemPushContent;
-                        if (isCheckFloor) {
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
+                            break;
+                        case _isImage && isCheckFloor === false:
+                            _addPushContent += _itemPushContent + "\n";
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
+                            break;
+                        case _isImage === false && isCheckFloor:
+                            _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                        } else {
-                            _addPushContent += "\n";
-                        }
+                            break;                            
+                        case _isImage === false && isCheckFloor === false:
+                            _addPushContent += _itemPushContent + "\n";
+                            break;                            
+                        default:
+                            break;
                     }
                     _pushData[_searchIndex]["pushContent"] = _addPushContent;
                 } else {
-
                     _addPushContent = "";
-                    if (_isImage) {
-                        _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
-                        if (isCheckFloor) {
+                    switch (true) {
+                        case _isImage && isCheckFloor:
+                            _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                        } else {
-                            _addPushContent += "\n";
-                        }
-                    } else {
-                        _addPushContent += _itemPushContent;
-                        if (isCheckFloor) {
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
+                            break;
+                        case _isImage && isCheckFloor === false:
+                            _addPushContent += _itemPushContent + "\n";
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">";
+                            break;
+                        case _isImage === false && isCheckFloor:
+                            _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                        } else {
-                            _addPushContent += "\n";
-                        }
+                            break;                            
+                        case _isImage === false && isCheckFloor === false:
+                            _addPushContent += _itemPushContent + "\n";
+                            break;                            
+                        default:
+                            break;
                     }
                     _pushData.push({
                         userId: _userId,
