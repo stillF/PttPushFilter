@@ -73,6 +73,12 @@
                             樓層
                         </label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" id="isCheckText" name="isCheckText" type="checkbox" value="1">
+                        <label class="form-check-label" for="isCheckText">
+                            純文字顯示圖片
+                        </label>
+                    </div>
                     <button type="button" class="btn btn-primary btn-block" style="margin-top:10px;"
                         onclick="searchPtt();">送出</button>
                 </div>
@@ -128,6 +134,8 @@
                 setResultDataByType2(_UrlData["pttUrl"]);
             } else if (_UrlData["urlType"] === 3) {
                 setResultDataByType3();
+            } else if (_UrlData["urlType"] === 4) {
+                setResultDataByType4();
             }
         }
 
@@ -314,7 +322,7 @@
             return false;
         }
 
-        function setResultDataByType3(_Ptturl) { //ptt.cc原始檔
+        function setResultDataByType3() { //ptt.cc原始檔
             $("#loadingModal").modal("show");
             let _pushData = [];
             let _userId = "";
@@ -413,6 +421,26 @@
             $("#loadingModal").modal("hide");
         }
 
+        function setResultDataByType4() { // 純文字顯示圖片
+            $("#loadingModal").modal("show");
+            let htmlTxt = jQuery.trim($("#htmlTxt").val());
+            const pushData = htmlTxt.split("\n").map(line => line.trim());
+            let _isImage = false;
+            let _html = "";
+            let _item = null;
+            for (let i = 0, iLen = pushData.length; i < iLen; i += 1) {
+                _item = pushData[i];
+                _isImage = isCheckImage(_item);
+                if (_isImage) {
+                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _item + ">" + "<br>";
+                } else {
+                    _html += "<span style='font-size: 25px;color: #c8c8c8;'>" + _item + "</span><br>";
+                }
+            }
+            $("#resultArea").append(_html);
+            $("#loadingModal").modal("hide");
+        }
+
         function checkUrl() {
             //let _urlType = parseInt($("input[name='urlType']:checked").val());
             let _urlType = 3;
@@ -434,6 +462,12 @@
                 if (jQuery.trim($("#htmlTxt").val()) === "") {
                     _status = false;
                 }
+            }
+            const isCheckFloor = $("input[name='isCheckText']:checked").val() ? true : false;
+            if(isCheckFloor){
+                _pttUrl = "";
+                _urlType = 4;
+                _status = true;
             }
             return result = {
                 pttUrl: _pttUrl,
