@@ -434,10 +434,9 @@
             for (let i = 0, iLen = pushData.length; i < iLen; i += 1) {
                 _item = pushData[i];
                 _isImage = isCheckImage(_item);
+                _html += "<span style='font-size: 25px;color: #c8c8c8;'>" + _item + "</span><br>";
                 if (_isImage) {
                     _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _item + ">" + "<br>";
-                } else {
-                    _html += "<span style='font-size: 25px;color: #c8c8c8;'>" + _item + "</span><br>";
                 }
             }
             $("#resultArea").append(_html);
