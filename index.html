@@ -281,48 +281,38 @@
             });
         }
 
-        function isCheckImage(txt) {
-            let pass1 = false;
-            let pass2 = false;
-            switch (true) {
-                case txt.startsWith("http:"):
-                    pass1 = true;
-                    break;
-                case txt.startsWith("https:"):
-                    pass1 = true;
-                    break;
-                default:
-                    break;
+        function getYoutubeImageUrl(txt) {
+            if (!videoUrl.startsWith("https://")) {
+                return "";
             }
-            switch (true) {
-                case txt.endsWith(".jpg"):
-                    pass2 = true;
-                    break;
-                case txt.endsWith(".JPG"):
-                    pass2 = true;
-                    break;
-                case txt.endsWith(".png"):
-                    pass2 = true;
-                    break;
-                case txt.endsWith(".PNG"):
-                    pass2 = true;
-                    break;
-                case txt.endsWith(".jpeg"):
-                    pass2 = true;
-                    break;
-                case txt.endsWith(".JPEG"):
-                    pass2 = true;
-                    break;
-                case txt.endsWith(".gif"):
-                    pass2 = true;
-                    break;
-                default:
-                    break;
-            }
-            if (pass1 && pass2) {
-                return true;
-            }
-            return false;
+            const videoId = videoUrl.match(
+                /(?:youtu\.be\/|youtube\.com\/(?:.*[?&]v=|embed\/|v\/))([0-9A-Za-z_-]{11})/
+            );
+            return videoId ? `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg` : "";
+        }
+
+        function getImageUrl(txt) {
+            if (typeof txt !== "string") return "";
+
+            // 驗證是否為 HTTP 或 HTTPS 開頭
+            // const isValidProtocol = txt.startsWith("http:") || txt.startsWith("https:");
+            const isValidProtocol = txt.startsWith("https:");
+
+            // 驗證是否為圖片副檔名
+            const validExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+            const isValidImage = validExtensions.some(ext => txt.toLowerCase().endsWith(ext));
+
+            if (!isValidProtocol) return "";
+
+            // 一般圖片網址
+            if (isValidImage) return txt;
+
+            // YouTube 影片縮圖網址
+            const videoIdMatch = txt.match(
+                /(?:youtu\.be\/|youtube\.com\/(?:.*[?&]v=|embed\/|v\/))([0-9A-Za-z_-]{11})/
+            );
+
+            return videoIdMatch ? `https://img.youtube.com/vi/${videoIdMatch[1]}/hqdefault.jpg` : "";
         }
 
         function setResultDataByType3() { //ptt.cc原始檔
@@ -332,7 +322,7 @@
             let _pushContent = "";
             let _itemPushContent = "";
             let _addPushContent = "";
-            let _isImage = false;
+            let _imageUrl = false;
             let _searchIndex = -1;
             let _html = "";
             let htmlTxt = jQuery.trim($("#htmlTxt").val());
@@ -348,26 +338,26 @@
                 _userId = jQuery.trim($(_item).find(".push-userid").text());
                 _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
                 _itemPushContent = jQuery.trim(($(_item).find(".push-content").text()).replace(": ", ""));
-                _isImage = isCheckImage(_itemPushContent);
+                _imageUrl = getImageUrl(_itemPushContent);
                 if (_searchIndex !== -1) {
                     _addPushContent = _pushData[_searchIndex]["pushContent"];
                     switch (true) {
-                        case _isImage && isCheckFloor:
+                        case _imageUrl !== "" && isCheckFloor:
                             _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">" + "\n";
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
                             break;
-                        case _isImage && isCheckFloor === false:
+                        case _imageUrl !== "" && isCheckFloor === false:
                             _addPushContent += _itemPushContent + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">" + "\n";
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
                             break;
-                        case _isImage === false && isCheckFloor:
+                        case _imageUrl === "" && isCheckFloor:
                             _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            break;                            
-                        case _isImage === false && isCheckFloor === false:
+                            break;
+                        case _imageUrl === "" && isCheckFloor === false:
                             _addPushContent += _itemPushContent + "\n";
-                            break;                            
+                            break;
                         default:
                             break;
                     }
@@ -375,22 +365,22 @@
                 } else {
                     _addPushContent = "";
                     switch (true) {
-                        case _isImage && isCheckFloor:
+                        case _imageUrl !== "" && isCheckFloor:
                             _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">" + "\n";
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
                             break;
-                        case _isImage && isCheckFloor === false:
+                        case _imageUrl !== "" && isCheckFloor === false:
                             _addPushContent += _itemPushContent + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _itemPushContent + ">" + "\n";
+                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
                             break;
-                        case _isImage === false && isCheckFloor:
+                        case _imageUrl === "" && isCheckFloor:
                             _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            break;                            
-                        case _isImage === false && isCheckFloor === false:
+                            break;
+                        case _imageUrl === "" && isCheckFloor === false:
                             _addPushContent += _itemPushContent + "\n";
-                            break;                            
+                            break;
                         default:
                             break;
                     }
@@ -428,15 +418,15 @@
             $("#loadingModal").modal("show");
             let htmlTxt = jQuery.trim($("#htmlTxt").val());
             const pushData = htmlTxt.split("\n").map(line => line.trim());
-            let _isImage = false;
+            let _imageUrl = "";
             let _html = "";
             let _item = null;
             for (let i = 0, iLen = pushData.length; i < iLen; i += 1) {
                 _item = pushData[i];
-                _isImage = isCheckImage(_item);
+                _imageUrl = getImageUrl(_item);
                 _html += "<span style='font-size: 25px;color: #c8c8c8;'>" + _item + "</span><br>";
-                if (_isImage) {
-                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _item + ">" + "<br>";
+                if (_imageUrl !== "") {
+                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "<br>";
                 }
             }
             $("#resultArea").append(_html);
