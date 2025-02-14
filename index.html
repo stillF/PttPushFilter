@@ -291,28 +291,56 @@
             return videoId ? `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg` : "";
         }
 
-        function getImageUrl(txt) {
-            if (typeof txt !== "string") return "";
+        function checkImageUrl(txt) {
+            if (typeof txt !== "string") {
+                return {
+                    imageUrl: "",
+                    youtubeUrl: "",
+                    orgTxt: txt
+                };
+            }
 
             // 驗證是否為 HTTP 或 HTTPS 開頭
             // const isValidProtocol = txt.startsWith("http:") || txt.startsWith("https:");
             const isValidProtocol = txt.startsWith("https:");
+            if (!isValidProtocol) {
+                return {
+                    imageUrl: "",
+                    youtubeUrl: "",
+                    orgTxt: txt
+                };
+            }
 
             // 驗證是否為圖片副檔名
             const validExtensions = [".jpg", ".jpeg", ".png", ".gif"];
             const isValidImage = validExtensions.some(ext => txt.toLowerCase().endsWith(ext));
-
-            if (!isValidProtocol) return "";
-
             // 一般圖片網址
-            if (isValidImage) return txt;
+            if (isValidImage) {
+                return {
+                    imageUrl: txt,
+                    youtubeUrl: "",
+                    orgTxt: txt
+                };
+            }
 
             // YouTube 影片縮圖網址
             const videoIdMatch = txt.match(
                 /(?:youtu\.be\/|youtube\.com\/(?:.*[?&]v=|embed\/|v\/))([0-9A-Za-z_-]{11})/
             );
+            if (videoIdMatch) {
+                const mYoutubeUrl = `https://www.youtube.com/watch?v=${videoIdMatch[1]}`;
+                return {
+                    imageUrl: `https://img.youtube.com/vi/${videoIdMatch[1]}/hqdefault.jpg`,
+                    youtubeUrl: `https://www.youtube.com/watch?v=${videoIdMatch[1]}`,
+                    orgTxt: txt
+                };
+            }
 
-            return videoIdMatch ? `https://img.youtube.com/vi/${videoIdMatch[1]}/hqdefault.jpg` : "";
+            return {
+                imageUrl: "",
+                youtubeUrl: "",
+                orgTxt: ""
+            };
         }
 
         function setResultDataByType3() { //ptt.cc原始檔
@@ -322,7 +350,7 @@
             let _pushContent = "";
             let _itemPushContent = "";
             let _addPushContent = "";
-            let _imageUrl = false;
+            let _isImage = false;
             let _searchIndex = -1;
             let _html = "";
             let htmlTxt = jQuery.trim($("#htmlTxt").val());
@@ -338,24 +366,35 @@
                 _userId = jQuery.trim($(_item).find(".push-userid").text());
                 _searchIndex = _pushData.findIndex((obj => obj.userId === _userId));
                 _itemPushContent = jQuery.trim(($(_item).find(".push-content").text()).replace(": ", ""));
-                _imageUrl = getImageUrl(_itemPushContent);
+                _isImage = checkImageUrl(_itemPushContent);
                 if (_searchIndex !== -1) {
                     _addPushContent = _pushData[_searchIndex]["pushContent"];
                     switch (true) {
-                        case _imageUrl !== "" && isCheckFloor:
+                        case _isImage.imageUrl !== "" && isCheckFloor:
+                            if (_isImage.youtubeUrl !== "") {
+                                _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            } else {
+                                _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            }
+                            break;
+                        case _isImage.imageUrl !== "" && isCheckFloor === false:
+                            if (_isImage.youtubeUrl !== "") {
+                                _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            } else {
+                                _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            }
+                            break;
+                        case _isImage.imageUrl === "" && isCheckFloor:
                             _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
                             break;
-                        case _imageUrl !== "" && isCheckFloor === false:
-                            _addPushContent += _itemPushContent + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
-                            break;
-                        case _imageUrl === "" && isCheckFloor:
-                            _addPushContent += _itemPushContent;
-                            _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            break;
-                        case _imageUrl === "" && isCheckFloor === false:
+                        case _isImage.imageUrl === "" && isCheckFloor === false:
                             _addPushContent += _itemPushContent + "\n";
                             break;
                         default:
@@ -365,20 +404,31 @@
                 } else {
                     _addPushContent = "";
                     switch (true) {
-                        case _imageUrl !== "" && isCheckFloor:
+                        case _isImage.imageUrl !== "" && isCheckFloor:
+                            if (_isImage.youtubeUrl !== "") {
+                                _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            } else {
+                                _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            }
+                            break;
+                        case _isImage.imageUrl !== "" && isCheckFloor === false:
+                            if (_isImage.youtubeUrl !== "") {
+                                _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            } else {
+                                _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                            }
+                            break;
+                        case _isImage.imageUrl === "" && isCheckFloor:
                             _addPushContent += _itemPushContent;
                             _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
                             break;
-                        case _imageUrl !== "" && isCheckFloor === false:
-                            _addPushContent += _itemPushContent + "\n";
-                            _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "\n";
-                            break;
-                        case _imageUrl === "" && isCheckFloor:
-                            _addPushContent += _itemPushContent;
-                            _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                            break;
-                        case _imageUrl === "" && isCheckFloor === false:
+                        case _isImage.imageUrl === "" && isCheckFloor === false:
                             _addPushContent += _itemPushContent + "\n";
                             break;
                         default:
@@ -418,15 +468,20 @@
             $("#loadingModal").modal("show");
             let htmlTxt = jQuery.trim($("#htmlTxt").val());
             const pushData = htmlTxt.split("\n").map(line => line.trim());
-            let _imageUrl = "";
+            let _isImage = "";
             let _html = "";
             let _item = null;
             for (let i = 0, iLen = pushData.length; i < iLen; i += 1) {
                 _item = pushData[i];
-                _imageUrl = getImageUrl(_item);
-                _html += "<span style='font-size: 25px;color: #c8c8c8;'>" + _item + "</span><br>";
-                if (_imageUrl !== "") {
-                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _imageUrl + ">" + "<br>";
+                _isImage = checkImageUrl(_item);
+                if (_isImage.imageUrl === "") {
+                    _html += "<span style='font-size:25px;color:#c8c8c8;'>" + _item + "</span><br>";
+                } else if (_isImage.youtubeUrl !== "") {
+                    _html += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "<br>";
+                } else {
+                    _html += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
+                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "<br>";
                 }
             }
             $("#resultArea").append(_html);
