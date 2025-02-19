@@ -329,8 +329,8 @@
             }
 
             // 驗證是否為 HTTP 或 HTTPS 開頭
-            // const isValidProtocol = txt.startsWith("http:") || txt.startsWith("https:");
-            const isValidProtocol = txt.startsWith("https:");
+            const isValidProtocol = txt.startsWith("http:") || txt.startsWith("https:");
+            // const isValidProtocol = txt.startsWith("https:");
             if (!isValidProtocol) {
                 return {
                     imageUrl: "",
