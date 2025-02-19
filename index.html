@@ -111,6 +111,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">圖片</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 text-align: center">
+                            <img id="demoImage" class="center-block" style="max-width: 100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer class="navbar-inverse">
         <div class="container-fluid text-center" style="background-color:#3E4449">
             <p class="text-muted" style="margin-top:10px;color:#ffffff">
@@ -340,6 +358,11 @@
             };
         }
 
+        function getImageModalHandler(imageUrl) {
+            document.getElementById("demoImage").src = imageUrl;
+            $("#imageModal").modal("show");
+        }
+
         function setResultDataByType3() { //ptt.cc原始檔
             $("#loadingModal").modal("show");
             let _pushData = [];
@@ -371,20 +394,20 @@
                             if (_isImage.youtubeUrl !== "") {
                                 _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
                                 _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             } else {
                                 _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
                                 _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             }
                             break;
                         case _isImage.imageUrl !== "" && isCheckFloor === false:
                             if (_isImage.youtubeUrl !== "") {
                                 _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             } else {
                                 _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             }
                             break;
                         case _isImage.imageUrl === "" && isCheckFloor:
@@ -405,20 +428,20 @@
                             if (_isImage.youtubeUrl !== "") {
                                 _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
                                 _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             } else {
                                 _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
                                 _addPushContent += "<span style='color:#c8c8c8;float:right;'>#" + (i + 1) + "</span>" + "\n";
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             }
                             break;
                         case _isImage.imageUrl !== "" && isCheckFloor === false:
                             if (_isImage.youtubeUrl !== "") {
                                 _addPushContent += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             } else {
                                 _addPushContent += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
-                                _addPushContent += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "\n";
+                                _addPushContent += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')">\n`;
                             }
                             break;
                         case _isImage.imageUrl === "" && isCheckFloor:
@@ -475,10 +498,10 @@
                     _html += "<span style='font-size:25px;color:#c8c8c8;'>" + _item + "</span><br>";
                 } else if (_isImage.youtubeUrl !== "") {
                     _html += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
-                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "<br>";
+                    _html += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')"><br>`;
                 } else {
                     _html += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
-                    _html += "<img style='max-height:300px;max-width:100%;margin-bottom:0.5em;' src=" + _isImage.imageUrl + ">" + "<br>";
+                    _html += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')"><br>`;
                 }
             }
             $("#resultArea").append(_html);
