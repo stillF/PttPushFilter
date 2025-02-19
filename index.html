@@ -74,6 +74,12 @@
                         </label>
                     </div>
                     <div class="form-check">
+                        <input class="form-check-input" id="isCheckPttText" name="isCheckPttText" type="checkbox" value="1">
+                        <label class="form-check-label" for="isCheckPttText">
+                            ptt內文
+                        </label>
+                    </div>
+                    <div class="form-check">
                         <input class="form-check-input" id="isCheckText" name="isCheckText" type="checkbox" value="1">
                         <label class="form-check-label" for="isCheckText">
                             純文字顯示圖片
@@ -154,6 +160,8 @@
                 setResultDataByType3();
             } else if (_UrlData["urlType"] === 4) {
                 setResultDataByType4();
+            } else if (_UrlData["urlType"] === 5) {
+                setResultDataByType5();
             }
         }
 
@@ -508,34 +516,87 @@
             $("#loadingModal").modal("hide");
         }
 
+        function setResultDataByType5() { // ptt內文
+            let htmlTxt = jQuery.trim($("#htmlTxt").val());
+            let tempDiv = document.createElement("div");
+            tempDiv.innerHTML = htmlTxt;
+            let filterData1 = [];
+            let stack = Array.from(tempDiv.childNodes);
+            while (stack.length) {
+                let node = stack.shift();
+                if (node.nodeType === Node.TEXT_NODE) {
+                    filterData1.push(node.textContent.trim());
+                } else if (node.nodeType === Node.ELEMENT_NODE && !node.matches("span.f2, div.push, script, div.article-metaline, div.article-metaline-right, title, div#topbar-container, div#navigation-container")) {
+                    stack.unshift(...Array.from(node.childNodes));
+                }
+            }
+            const filterData2 = filterData1
+                .filter(item => item.trim().length > 0)
+                .map(item => item.split("\n"))
+                .flat()
+                .map(line => line.trim())
+                .filter(line => line.length > 0 || line === "--")
+                .map(line => line.length > 0 ? line : "");
+
+            let _isImage = "";
+            let _html = "";
+            let _item = null;
+            for (let i = 0, iLen = filterData2.length; i < iLen; i += 1) {
+                _item = jQuery.trim(filterData2[i]);
+                if (_item !== "") {
+                    console.log(i);
+
+                    console.log(_item);
+                    _isImage = checkImageUrl(_item);
+                    if (_isImage.imageUrl === "") {
+                        _html += "<span style='font-size:25px;color:#c8c8c8;'>" + _item + "</span><br><br>";
+                    } else if (_isImage.youtubeUrl !== "") {
+                        _html += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br><br>`;
+                        _html += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')"><br><br>`;
+                    } else {
+                        _html += `<a href='${_isImage.imageUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br><br>`;
+                        _html += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')"><br><br>`;
+                    }
+                }
+            }
+            $("#resultArea").append(_html);
+            $("#loadingModal").modal("hide");
+        }
+
         function checkUrl() {
             //let _urlType = parseInt($("input[name='urlType']:checked").val());
             let _urlType = 3;
             let _pttUrl = jQuery.trim($("#pttUrl").val());
             let _status = true;
-            if (_urlType === 1) { //ptt.cc 網址
-                if (!_pttUrl.startsWith("https://www.ptt.cc/bbs/")) {
-                    _status = false;
-                }
-                if (!_pttUrl.endsWith(".html")) {
-                    _status = false;
-                }
-            } else if (_urlType === 2) { //disp.cc 網址
-                if (!_pttUrl.startsWith("https://disp.cc/b/")) {
-                    _status = false;
-                }
-            } else if (_urlType === 3) { //ptt.cc 原始檔
-                _pttUrl = "";
-                if (jQuery.trim($("#htmlTxt").val()) === "") {
-                    _status = false;
-                }
-            }
-            const isCheckFloor = $("input[name='isCheckText']:checked").val() ? true : false;
+            // if (_urlType === 1) { //ptt.cc 網址
+            //     if (!_pttUrl.startsWith("https://www.ptt.cc/bbs/")) {
+            //         _status = false;
+            //     }
+            //     if (!_pttUrl.endsWith(".html")) {
+            //         _status = false;
+            //     }
+            // } else if (_urlType === 2) { //disp.cc 網址
+            //     if (!_pttUrl.startsWith("https://disp.cc/b/")) {
+            //         _status = false;
+            //     }
+            // } else if (_urlType === 3) { //ptt.cc 原始檔
+            //     _pttUrl = "";
+            //     if (jQuery.trim($("#htmlTxt").val()) === "") {
+            //         _status = false;
+            //     }
+            // }
+            const isCheckText = $("input[name='isCheckText']:checked").val() ? true : false;
             if(isCheckFloor){
                 _pttUrl = "";
                 _urlType = 4;
                 _status = true;
             }
+            const isCheckPttText = $("input[name='isCheckPttText']:checked").val() ? true : false;
+            if(isCheckFloor){
+                _pttUrl = "";
+                _urlType = 5;
+                _status = true;
+            }            
             return result = {
                 pttUrl: _pttUrl,
                 urlType: _urlType,
