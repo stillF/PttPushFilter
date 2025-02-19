@@ -517,6 +517,7 @@
         }
 
         function setResultDataByType5() { // ptt內文
+            $("#loadingModal").modal("show");
             let htmlTxt = jQuery.trim($("#htmlTxt").val());
             let tempDiv = document.createElement("div");
             tempDiv.innerHTML = htmlTxt;
@@ -562,27 +563,9 @@
         }
 
         function checkUrl() {
-            //let _urlType = parseInt($("input[name='urlType']:checked").val());
             let _urlType = 3;
             let _pttUrl = jQuery.trim($("#pttUrl").val());
             let _status = true;
-            // if (_urlType === 1) { //ptt.cc 網址
-            //     if (!_pttUrl.startsWith("https://www.ptt.cc/bbs/")) {
-            //         _status = false;
-            //     }
-            //     if (!_pttUrl.endsWith(".html")) {
-            //         _status = false;
-            //     }
-            // } else if (_urlType === 2) { //disp.cc 網址
-            //     if (!_pttUrl.startsWith("https://disp.cc/b/")) {
-            //         _status = false;
-            //     }
-            // } else if (_urlType === 3) { //ptt.cc 原始檔
-            //     _pttUrl = "";
-            //     if (jQuery.trim($("#htmlTxt").val()) === "") {
-            //         _status = false;
-            //     }
-            // }
             const isCheckText = $("input[name='isCheckText']:checked").val() ? true : false;
             if(isCheckText){
                 _pttUrl = "";
