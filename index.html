@@ -546,7 +546,7 @@
                 if (_item !== "") {
                     _isImage = checkImageUrl(_item);
                     if (_isImage.imageUrl === "") {
-                        _html += "<span style='font-size:25px;color:#c8c8c8;'>" + _item + "</span><br><br>";
+                        _html += "<span style='font-size:25px;color:#c8c8c8;'>" + _item + "</span><br>";
                     } else if (_isImage.youtubeUrl !== "") {
                         _html += `<a href='${_isImage.youtubeUrl}' target='_blank' style='font-size:25px;color:#0e4fb0;'>${_isImage.orgTxt}</a><br>`;
                         _html += `<img style="max-height:300px;max-width:100%;margin-bottom:0.5em;" src="${_isImage.imageUrl}" onclick="getImageModalHandler('${_isImage.imageUrl}')"><br>`;
