@@ -535,8 +535,7 @@
                 .filter(item => item.trim().length > 0)
                 .map(item => item.split("\n"))
                 .flat()
-                .map(line => line.trim())
-                .map(line => line.length > 0 ? line : "");
+                .map(line => line.trim());
 
             let _isImage = "";
             let _html = "";
